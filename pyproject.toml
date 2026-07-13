@@ -1,0 +1,3 @@
+[tool.taskipy.tasks]
+
+report = "pytest --alluredir=allure-results --clean-alluredir & allure generate allure-results --clean --single-file -o docs & allure open docs"
