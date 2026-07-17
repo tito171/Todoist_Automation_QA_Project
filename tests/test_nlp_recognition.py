@@ -37,7 +37,7 @@ def test_nlp_date_recognition_and_color_validation(main_page, case):
         actual_date_button_data = main_page.nlp_input.get_actual_date_button_data()
 
     with allure.step(f"Проверить, что на кнопке 'Срок' появился ожидаемый текст: {case['expected_text']}"):
-        assert actual_date_button_data["text"] == (case["expected_text"]), f"Текст на кнопке не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
+        assert actual_date_button_data["text"] == (case["expected_text"]), f"Текст на кнопке Срок не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
 
     with allure.step(f"Проверить, что текст на кнопке 'Срок' имеет ожидаемый текст: {case['expected_color']}"):
         assert (
@@ -61,7 +61,7 @@ def test_nlp_recurring_deadlines_recognition(main_page, case):
         actual_date_button_data = main_page.nlp_input.get_actual_date_button_data()
 
     with allure.step(f"Проверить, что на кнопке 'Срок' появился ожидаемый текст: {case['expected_text']}"):
-        assert actual_date_button_data["text"] == case["expected_text"], f"Текст на кнопке не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
+        assert actual_date_button_data["text"] == case["expected_text"], f"Текст на кнопке Срок не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
 
     with allure.step("Проверить, что на кнопке 'Срок' появилась иконка повтора"):
         assert main_page.nlp_input.icon_recurring_is_present(), "Иконка повтора не отображается на кнопке 'Срок'"

@@ -171,21 +171,23 @@ class SortingComponent(BasePage):
 
 class NLPInputComponent(BasePage):
     CREATE_TASK_BTN = (By.XPATH, "//div[@data-testid='app-sidebar-container']//button[@type='button' and contains(., 'Добавить задачу')]")
+    # TASK_EDITOR = (By.CSS_SELECTOR, "div[data-testid='quick-add']")
     TASK_EDITOR = (By.CSS_SELECTOR, "form[data-testid='task-editor']")
-    TASK_EDITOR_CONTENT_FIELD = (By.XPATH, "//div[contains(@class,'task_editor__content_field')]//div[@aria-label='Название задачи']")
+    # TASK_EDITOR_CONTENT_FIELD = (By.XPATH, "//div[@aria-label='Название задачи']")
+    TASK_EDITOR_CONTENT_FIELD = (By.XPATH, "//form[@data-testid='task-editor']//div[@aria-label='Название задачи']")
     NLP_TAG_DATE = (By.XPATH, "//span[@data-testid='natural-language-match']")
-    TASK_EDITOR_DATE_BTN = (By.XPATH, "//div[@class='task_editor__editing_area']//div[@aria-label='Выбрать дату' and @role='button']")
+    TASK_EDITOR_DATE_BTN = (By.XPATH, "//div[@aria-label='Выбрать дату' and @role='button']")
     TASK_EDITOR_DATE_TEXT = (By.CSS_SELECTOR, "span[class*='date']")
     TASK_EDITOR_DATE_RECURRING_ICON = (By.CSS_SELECTOR, "span[class*='date'] svg path[d^='M7 3H4.5a.5.5']")
-    TASK_EDITOR_CANCEL_BTN = (By.XPATH, "//button[@type='button' and contains(., 'Отмена')]")
+    # TASK_EDITOR_CANCEL_BTN = (By.XPATH, "//button[@type='button' and @aria-label='Отмена']")
+    TASK_EDITOR_CANCEL_BTN = (By.XPATH, "//div[@data-testid='task-editor-action-buttons']//button[@type='button' and contains(.,'Отмена')]")
     SCHEDULER = (By.CSS_SELECTOR, "div[data-testid='scheduler-view']")
-    SCHEDULER_BTN_NODATE=(By.CSS_SELECTOR,"button[data-track='scheduler|date_shortcut_nodate']")
+    SCHEDULER_BTN_NODATE = (By.CSS_SELECTOR, "button[data-track='scheduler|date_shortcut_nodate']")
     SCHEDULER_INPUT = (By.CSS_SELECTOR, "input[aria-label='Введите срок']")
     CALENDAR_DAY_SELECTED = (By.CSS_SELECTOR, "button[class*='calendar__day--selected'] span[class='calendar__day__date__number']")
     RECURRENCE_BTN = (By.CSS_SELECTOR, "button[data-testid='recurrence-menu-button'] span")
     DATE_PICKER_NEXT_MONTH = (By.XPATH, "//button[@class='date-picker-header-action' and @aria-label='Перейти к следующему месяцу']")
     DATE_PICKER_PREV_MONTH = (By.XPATH, "//button[@class='date-picker-header-action' and @aria-label='Перейти к предыдущему месяцу']")
-    # DELETE_BTN = (By.XPATH, "//div[@data-testid='confirmation-modal']//button[@type='button']//span[contains(.,'Удалить')]")
 
     def open_task_form(self):
         self.click(self.CREATE_TASK_BTN)
