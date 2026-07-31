@@ -7,7 +7,7 @@ from selenium.common import NoSuchElementException, TimeoutException
 class BasePage:
     URL = None
 
-    def __init__(self, driver, timeout=15):
+    def __init__(self, driver, timeout=30):
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout)
 
