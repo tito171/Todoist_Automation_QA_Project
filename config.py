@@ -6,6 +6,7 @@ ENV_PATH = os.path.join(ROOT_DIR, ".env")
 GLOBAL_TEST_DATE = "2026-07-01"
 BASE_URL = "https://api.todoist.com"
 URL_LOGIN_PAGE = "https://app.todoist.com/auth/login"
+URL_MAIN_PAGE="https://app.todoist.com/app/inbox"
 
 load_dotenv(dotenv_path=ENV_PATH)
 

@@ -26,6 +26,10 @@ class BasePage:
         element = self.wait.until(EC.element_to_be_clickable(locator), message=f"Таймаут! Элемент с локатором {locator} так и не стал кликабельным (заблокирован или перекрыт)")
         element.click()
 
+    def wait_for_element_presence(self, locator, timeout=None):
+        wait = WebDriverWait(self.driver, timeout) if timeout else self.wait
+        return wait.until(EC.presence_of_element_located(locator), message=f"Таймаут! Не удалось дождаться появления элемента на странице: {locator}")
+
     def wait_for_element(self, locator):
         return self.wait.until(EC.visibility_of_element_located(locator), message=f"Таймаут! Не удалось дождаться видимости элемента с локатором: {locator}")
 
@@ -48,6 +52,9 @@ class BasePage:
             if fail_if_missing:
                 raise NoSuchElementException(f"Ошибка! Текстовый подэлемент {sub_locator} отсутствует внутри родительского контейнера")
             return None
+
+    def get_element_attr(self, element, attr_name):
+        return element.get_dom_attribute(attr_name)
 
     def get_sub_element_attr(self, parent_element, sub_locator, attr_name):
         try:

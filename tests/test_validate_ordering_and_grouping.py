@@ -17,11 +17,13 @@ def reset_sorting(main_page):
 @allure.title("Группировка по '{case[group_by]}' - Сортировка по '{case[sort_by]}' ({case[direction]})")
 @pytest.mark.parametrize("case", TESTS_SORTING_AND_GROUPNG, ids=lambda x: f"{x.get('group_by')}-{x.get('sort_by')}-{x.get('direction')}")
 def test_validate_ordering_and_grouping(main_page, tasks_list, case):
+    main_page.tasks_list.wait_until_tasks_loaded()
+
     with allure.step(f"Сортировать список по параметрам: {case["group_by"]}, {case["sort_by"]}, {case["direction"]}"):
         main_page.sorting.sort_tasks_list(case["group_by"], case["sort_by"], case["direction"])
 
     with allure.step("Собрать список задач с интерфейса"):
-        actual_tasks = main_page.sorting.get_all_tasks()
+        actual_tasks = main_page.tasks_list.get_all_tasks()
 
     with allure.step("Добавить к каждой задаче из списка параметры id и added_at, полученных в ответе от сервера"):
         tasks = add_param_to_list_tasks(tasks_list, actual_tasks)

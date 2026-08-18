@@ -22,3 +22,6 @@ Thumbs.db
 
 # Файл с глобальными переменными
 .env
+
+# Кэш браузера
+selenium_todoist_profile/

@@ -12,7 +12,7 @@ from config import (
 COLUMN_TRANSLATION = {
     # Для списка задач (API)
     "Название": "content",
-    "Срок": "due_string",
+    "Срок": "due",
     "Приоритет": "priority",
     "Метки": "labels",
     # Для календаря и дат
@@ -46,6 +46,8 @@ def parse_base_excel(file_path):
         for key, value in case.items():
             if str(value).strip() in ("nan", "NaN", "None"):
                 case[key] = None
+        if case.get("due") is not None:
+            case["due"] = {"string": str(case["due"])}
 
     return cases
 

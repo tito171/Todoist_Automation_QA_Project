@@ -2,7 +2,6 @@ import allure, pytest
 from test_data.test_data_store import TESTS_DATA_AND_TIME, TESTS_RECURRING_CALENDAR
 from tests.helpers import mock_browser_time
 from config import COLORS, GLOBAL_TEST_DATE
-import pytest_check as check
 
 pytestmark = pytest.mark.order(1)
 
@@ -10,6 +9,7 @@ pytestmark = pytest.mark.order(1)
 @pytest.fixture(scope="module", autouse=True)
 def setup_system_date(driver):
     script_id = mock_browser_time(driver, GLOBAL_TEST_DATE)
+    driver.refresh()
     yield
     driver.execute_cdp_cmd("Page.removeScriptToEvaluateOnNewDocument", {"identifier": script_id})
     driver.refresh()
@@ -32,22 +32,20 @@ def test_nlp_date_recognition_and_color_validation(main_page, case):
         main_page.nlp_input.type_name_task(case["text_input"])
 
     with allure.step("Проверить, что тег даты успешно появился в поле"):
-        check.is_true(main_page.nlp_input.tag_date_is_present(), "\nДата не распозналась парсером")
+        assert main_page.nlp_input.tag_date_is_present(), "\nДата не распозналась парсером"
 
     with allure.step("Собрать актуальные данные с кнопки 'Срок'"):
         actual_date_button_data = main_page.nlp_input.get_actual_date_button_data()
 
     with allure.step(f"Проверить, что на кнопке 'Срок' появился ожидаемый текст: {case['expected_text']}"):
-        check.equal(
-            actual_date_button_data["text"], case["expected_text"], f"\nТекст на кнопке Срок не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
-        )
+        assert (
+            actual_date_button_data["text"] == case["expected_text"]
+        ), f"\nТекст на кнопке Срок не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
 
     with allure.step(f"Проверить, что текст на кнопке 'Срок' имеет ожидаемый цвет: {case['expected_color']}"):
-        check.equal(
-            actual_date_button_data["color"],
-            COLORS[case["expected_color"]],
-            f"\nЦвет текста на кнопке не совпадает с ожидаемым\nОжидание: {COLORS[case["expected_color"]]}\nРезультат: {actual_date_button_data['color']}",
-        )
+        assert (
+            actual_date_button_data["color"] == COLORS[case["expected_color"]]
+        ), f"\nЦвет текста на кнопке не совпадает с ожидаемым\nОжидание: {COLORS[case["expected_color"]]}\nРезультат: {actual_date_button_data['color']}"
 
 
 @allure.epic("Интеллектуальный ввод задач")
@@ -60,42 +58,36 @@ def test_nlp_recurring_deadlines_recognition(main_page, case):
         main_page.nlp_input.type_name_task(case["text_input"])
 
     with allure.step("Проверить, что тег даты успешно появился в поле"):
-        check.is_true(main_page.nlp_input.tag_date_is_present(), "\nДата не распозналась парсером")
+        assert main_page.nlp_input.tag_date_is_present(), "\nДата не распозналась парсером"
 
     with allure.step("Собрать актуальные данные с кнопки 'Срок'"):
         actual_date_button_data = main_page.nlp_input.get_actual_date_button_data()
 
     with allure.step(f"Проверить, что на кнопке 'Срок' появился ожидаемый текст: {case['expected_text']}"):
-        check.equal(
-            actual_date_button_data["text"], case["expected_text"], f"\nТекст на кнопке Срок не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
-        )
+        assert (
+            actual_date_button_data["text"] == case["expected_text"]
+        ), f"\nТекст на кнопке Срок не совпадает с ожидаемым\nОжидание: {case['expected_text']}\nРезультат: {actual_date_button_data['text']}"
 
     with allure.step("Проверить, что на кнопке 'Срок' появилась иконка повтора"):
-        check.is_true(main_page.nlp_input.icon_recurring_is_present(), "\nИконка повтора не отображается на кнопке 'Срок'")
+        assert main_page.nlp_input.icon_recurring_is_present(), "\nИконка повтора не отображается на кнопке 'Срок'"
 
     with allure.step("Открыть окно планировщика и собрать актуальные данные"):
         actual_data = main_page.nlp_input.get_data_from_scheduler(case["interval"], case["period"], case["end_date"])
 
     with allure.step(f"Проверить, что в поле 'Введите срок' отображается ожидаемый текст повтора: {case['expected_recurrence_input']}"):
-        check.equal(
-            actual_data["text_recurrence_input"],
-            case["expected_recurrence_input"],
-            f"\nТекст в поле 'Введите срок' не совпадает с ожидаемым\nОжидание: {case['expected_recurrence_input']}\nРезультат: {actual_data['text_recurrence_input']}",
-        )
+        assert (
+            actual_data["text_recurrence_input"] == case["expected_recurrence_input"]
+        ), f"\nТекст в поле 'Введите срок' не совпадает с ожидаемым\nОжидание: {case['expected_recurrence_input']}\nРезультат: {actual_data['text_recurrence_input']}"
 
     with allure.step(f"Проверить, что в мини-календаре выбрана ожидаемая дата: {case['expected_day']}"):
-        check.equal(
-            actual_data["calendar_day"],
-            case["expected_day"],
-            f"\nВыбранная дата на кнопке в мини-каледаре не совпадает с ожидаемой\nОжидание: {case['expected_day']}\nРезультат: {actual_data['calendar_day']}",
-        )
+        assert (
+            actual_data["calendar_day"] == case["expected_day"]
+        ), f"\nВыбранная дата на кнопке в мини-каледаре не совпадает с ожидаемой\nОжидание: {case['expected_day']}\nРезультат: {actual_data['calendar_day']}"
 
     with allure.step(f"Проверить, что в мини-календаре отмечены дни повтора согласно ожидаемому интервалу: {case['interval']}"):
-        check.is_true(actual_data["valid_interval"])
+        assert actual_data["valid_interval"]
 
     with allure.step(f"Проверить, что на кнопке 'Повтор' отображается ожидаемый текст повтора: {case['expected_recurrence_btn']}"):
-        check.equal(
-            actual_data["text_recurrence_btn"],
-            case["expected_recurrence_btn"],
-            f"\nТекст на кнопке Повтор в мини-каледаре не совпадает с ожидаемым\nОжидание: {case["expected_recurrence_btn"]}\nРезультат: {actual_data['text_recurrence_btn']}",
-        )
+        assert (
+            actual_data["text_recurrence_btn"] == case["expected_recurrence_btn"]
+        ), f"\nТекст на кнопке Повтор в мини-каледаре не совпадает с ожидаемым\nОжидание: {case["expected_recurrence_btn"]}\nРезультат: {actual_data['text_recurrence_btn']}"

@@ -79,7 +79,6 @@ def execute_comparison_chain(task_1, task_2, direction, chain):
 # --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ПЕРЕВОДА НАЗВАНИЯ ГРУППЫ В ДАТУ (ИСПОЛЬЗУЕТСЯ ДЛЯ ПОЛУЧЕНИЯ СРОКА ЗАДАЧИ) ---
 def parse_date_from_group_name(group_name):
     base_date = group_name.split(" ‧ ")[0].split()
-
     day_ = int(base_date[0])
     month_ = MONTHS[base_date[1]]
     year_ = int(base_date[2]) if len(base_date) == 3 else datetime.now().year
@@ -93,7 +92,9 @@ STRATEGIES = {
         "tasks_comparator": lambda task_1, task_2, direction: execute_comparison_chain(task_1, task_2, direction, [compare_priority, compare_date_always_asc, compare_added_at_always_asc]),
     },
     "Срок": {
-        "group_validator": lambda task, group_name: parse_date(task["date"]).date() == parse_date_from_group_name(group_name).date(),
+        "group_validator": lambda task, group_name: (
+            parse_date(task["date"]).date() == parse_date_from_group_name(group_name).date() if group_name != "Без срока" and task["date"] is not None else True
+        ),
         "tasks_comparator": lambda task_1, task_2, direction: execute_comparison_chain(task_1, task_2, direction, [compare_date, compare_priority_always_desc, compare_added_at_always_asc]),
     },
     "Название": {
@@ -105,7 +106,7 @@ STRATEGIES = {
         ),
     },
     "Метка": {
-        "group_validator": lambda task, group_name: group_name in task["labels"],
+        "group_validator": lambda task, group_name: group_name in task["labels"] if group_name != "Без меток" and "labels" in task else True,
     },
 }
 
@@ -144,10 +145,9 @@ def verify_tasks_sorting(tasks, sort_by, direction):
 
 
 def add_param_to_list_tasks(tasks_list, actual_tasks):
-    data_index = {task["id"]: task["added_at"] for task in tasks_list}
     for list_of_tasks in actual_tasks.values():
         for task in list_of_tasks:
-            task["added_at"] = data_index.get(task.get("id"))
+            task["added_at"] = tasks_list.get(task.get("id"))
     return actual_tasks
 
 
@@ -196,7 +196,7 @@ def mock_browser_time(driver, target_date):
         }};
         Object.setPrototypeOf(window.Intl.DateTimeFormat, OriginalDateTimeFormat);
 
-        // 3. КРИТИЧЕСКИЙ ШАГ: Корректируем системный таймер performance
+        // 3. Корректируем системный таймер performance
         const originalPerformanceNow = window.performance.now.bind(window.performance);
         if (window.performance && window.performance.timeOrigin) {{
             // Сдвигаем точку отсчета времени страницы на нашу фейковую дату
