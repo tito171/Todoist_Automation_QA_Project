@@ -3,10 +3,9 @@ from dotenv import load_dotenv
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_PATH = os.path.join(ROOT_DIR, ".env")
-GLOBAL_TEST_DATE = "2026-07-01"
 BASE_URL = "https://api.todoist.com"
 URL_LOGIN_PAGE = "https://app.todoist.com/auth/login"
-URL_MAIN_PAGE="https://app.todoist.com/app/inbox"
+URL_INBOX_PAGE="https://app.todoist.com/app/inbox"
 
 load_dotenv(dotenv_path=ENV_PATH)
 
@@ -16,23 +15,24 @@ load_dotenv(dotenv_path=ENV_PATH)
 EMAIL = os.getenv("TODOIST_EMAIL")
 PASSWORD = os.getenv("TODOIST_PASSWORD")
 TD_API_TOKEN = os.getenv("TD_API_TOKEN")
+HEADERS = {"Authorization": f"Bearer {TD_API_TOKEN}", "Content-Type": "application/json"}
 
 # =====================================================================
 # 2. ПУТИ К ФАЙЛАМ И ДИРЕКТОРИЯМ
 # =====================================================================
-LIST_OF_TASKS_XLSX = os.path.join(ROOT_DIR, "test_data", "list_of_tasks.xlsx")
-TESTS_DATA_AND_TIME_XLSX = os.path.join(ROOT_DIR, "test_data", "tests_date_and_time.xlsx")
-TESTS_RECURRING_CALENDAR_XLSX = os.path.join(ROOT_DIR, "test_data", "tests_recurring_calendar.xlsx")
-TESTS_SORTING_AND_GROUPNG_XLSX = os.path.join(ROOT_DIR, "test_data", "tests_sorting_and_grouping.xlsx")
+LIST_OF_TASKS_CSV = os.path.join(ROOT_DIR, "test_data", "list_of_tasks.csv")
+ORDERING_TEST_DATA_CSV = os.path.join(ROOT_DIR, "test_data", "ordering_test_data.csv")
+TESTS_DATE_AND_TIME_CSV = os.path.join(ROOT_DIR, "test_data", "tests_date_and_time.csv")
+TESTS_RECURRING_CALENDAR_CSV = os.path.join(ROOT_DIR, "test_data", "tests_recurring_calendar.csv")
 
 # =====================================================================
 # 3. СЛОВАРИ И КАРТЫ СООТВЕТСТВИЙ
 # =====================================================================
 
-# --- СЛОВАРЬ НАЗВАНИЙ МЕСЯЦЕВ ИЗ ПРИЛОЖЕНИЯ И ИХ ЧИСЛОВЫХ ПРЕДСТАВЛЕНИЙ ---
+# --- СЛОВАРЬ СООТВЕТСТВИЯ НАЗВАНИЙ МЕСЯЦЕВ ИЗ ПРИЛОЖЕНИЯ И ИХ ЧИСЛОВЫХ ПРЕДСТАВЛЕНИЙ ---
 MONTHS = {"янв": 1, "февр": 2, "мар": 3, "апр": 4, "мая": 5, "июн": 6, "июл": 7, "авг": 8, "сент": 9, "окт": 10, "нояб": 11, "дек": 12}
 
-# --- СЛОВАРЬ ДЛЯ ОПРЕДЕЛЕНИЯ СООТВЕТСТВИЯ МЕЖДУ ПРИОРИТЕТОМ ЗАДАЧИ В UI И ВНУТРЕННИМ ПРИОРИТЕТОМ ---
+# --- СЛОВАРЬ СООТВЕТСТВИЯ МЕЖДУ ПРИОРИТЕТОМ ЗАДАЧИ В UI И ВНУТРЕННИМ ПРИОРИТЕТОМ ---
 PRIORITY_MAP = {
     1: "Приоритет 4",
     2: "Приоритет 3",
@@ -40,7 +40,7 @@ PRIORITY_MAP = {
     4: "Приоритет 1",
 }
 
-# --- СЛОВАРЬ СООТВЕТСВИЯ НАЗВАНИЙ ДНЕЙ НЕДЕЛИ И ИХ ЧИСЛОВЫХ ПРЕДСТАВЛЕНИЙ ---
+# --- СЛОВАРЬ СООТВЕТСТВИЯ НАЗВАНИЙ ДНЕЙ НЕДЕЛИ И ИХ ЧИСЛОВЫХ ПРЕДСТАВЛЕНИЙ ---
 WEEKDAYS = {
     "Понедельник": 0,
     "Вторник": 1,
@@ -51,5 +51,24 @@ WEEKDAYS = {
     "Воскресенье": 6,
 }
 
-# --- СЛОВАРЬ СООТВЕТСВИЯ НАЗВАНИЙ ЦВЕТОВ И ИХ КОДОВ ---
-COLORS = {"зеленый": "rgba(5, 133, 39, 1)", "коричневый": "rgba(173, 98, 0, 1)", "фиолетовый": "rgba(105, 46, 194, 1)", "серый": "rgba(128, 128, 128, 1)"}
+COLUMN_TRANSLATION = {
+    # Для списка задач (API)
+    "Название": "content",
+    "Срок": "due",
+    "Приоритет": "priority",
+    "Метки": "labels",
+    # Для календаря и дат
+    "Значение": "text_input",
+    "Ожидаемый текст": "expected_text",
+    "Ожидаемое значение повтора": "expected_recurrence_input",
+    "Ожидаемый день": "expected_day",
+    "Ожидаемый текст на кнопке повтора": "expected_recurrence_btn",
+    "Интервал": "interval",
+    "Период проверки": "period",
+    "Дата окончания": "end_date",
+    "Ожидаемый цвет": "expected_color",
+    # Для сортировки
+    "Параметр группировки": "group_by",
+    "Параметр сортировки": "sort_by",
+    "Направление": "direction",
+}
