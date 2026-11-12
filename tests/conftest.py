@@ -1,4 +1,4 @@
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from src.pages.login_page import LoginPage
 from config import BASE_URL, EMAIL, PASSWORD, HEADERS
@@ -9,16 +9,25 @@ import pytest, httpx, json, uuid
 @pytest.fixture(scope="module")
 def driver():
     options = Options()
-    # options.add_argument("-headless=new")
-    options.add_argument("--width=1920")
-    options.add_argument("--height=1080")
+    # options.add_argument("--headless=new")
+    options.add_argument("--window-size=1920,1080")
 
-    # options.set_preference("dom.webdriver.enabled", False)
-    # options.set_preference("useAutomationExtension", False)
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_argument("--disable-blink-features=AutomationControlled")
+
+    options.add_argument("--disable-save-password-bubble")
+    options.add_argument("--disable-autofill")
+
+    prefs = {
+        "credentials_enable_service": False,  # Отключает предложение сохранить пароль
+        "profile.password_manager_enabled": False,  # Отключает сам менеджер паролей
+        "autofill.profile_enabled": False,  # Отключает автозаполнение адресов/форм
+    }
+    options.add_experimental_option("prefs", prefs)
 
     options.page_load_strategy = "eager"
 
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Chrome(options=options)
     driver.set_page_load_timeout(15)
     yield driver
     driver.quit()
@@ -28,7 +37,7 @@ def driver():
 def main_page(driver):
     login_page = LoginPage(driver)
     login_page.open()
-    main_page=login_page.login_as(EMAIL,PASSWORD)
+    main_page = login_page.login_as(EMAIL, PASSWORD)
     yield main_page
 
 

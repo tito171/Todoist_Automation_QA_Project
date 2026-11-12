@@ -2,8 +2,6 @@ from test_data.test_data_store import ORDERING_TEST_DATA
 from tests.helpers import verify_tasks_grouping, verify_tasks_sorting
 import pytest, allure
 
-pytestmark = pytest.mark.order(2)
-
 
 @pytest.fixture(scope="module", autouse=True)
 def reset_view_options(main_page):
